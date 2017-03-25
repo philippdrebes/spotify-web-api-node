@@ -1564,6 +1564,34 @@ SpotifyWebApi.prototype = {
   },
 
   /**
+   * Get the most recent 50 tracks played by a user.
+   * @param {Object} [options] Options, being limit, after, before.
+   * @param {requestCallback} [callback] Optional callback method to be called instead of the promise.
+   * @returns {Promise|undefined} A promise that if successful, resolves into a paging object of play history objects,
+   *          otherwise an error. Not returned if a callback is given.
+   */
+  getMyRecentlyPlayedTracks: function(options, callback) {
+      var request = WebApiRequest.builder()
+          .withPath('/v1/me/player/recently-played')
+          .build();
+
+      this._addAccessToken(request, this.getAccessToken());
+      this._addQueryParameters(request, options);
+
+      var promise = this._performRequest(HttpManager.get, request);
+
+      if (callback) {
+          promise.then(function(data) {
+              callback(null, data);
+          }, function(err) {
+              callback(err);
+          });
+      } else {
+          return promise;
+      }
+  },
+
+  /**
    * Add the current user as a follower of one or more other Spotify users.
    * @param {string[]} userIds The IDs of the users to be followed.
    * @param {requestCallback} [callback] Optional callback method to be called instead of the promise.
